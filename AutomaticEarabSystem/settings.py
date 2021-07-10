@@ -26,7 +26,7 @@ SECRET_KEY = 'bcf2u&4w%xe-e2f77%sj%w#z33ph*yv%e!(a99pzaay^0*#k=w'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["ngrok.io", "443e22f21a59.ngrok.io"]
+ALLOWED_HOSTS = ["ngrok.io", "443e22f21a59.ngrok.io", "18.193.7.235"]
 
 AUTH_USER_MODEL = "users.User"
 TEACHER_MODEL = "users.Teacher"
@@ -103,10 +103,10 @@ WSGI_APPLICATION = 'AutomaticEarabSystem.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'aes',
-        'USER': 'root',
-        'PASSWORD': 'password',
-        'HOST': 'localhost',
+        'NAME': 'MainDB',
+        'USER': 'admin',
+        'PASSWORD': 'S0IAYRBaUaylYI8X4R0U',
+        'HOST': 'main-db.cjp9azku86kv.eu-central-1.rds.amazonaws.com',
         'PORT': '3306',
     }
 }
