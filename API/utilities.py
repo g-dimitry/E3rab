@@ -1,7 +1,9 @@
 import pickle as pkl
 import numpy as np
+from pathlib import Path
+import os
 
-CONSTANTS_PATH = 'D:\Projects\Gradution Project\AutomaticEarabSystem\helpers'
+CONSTANTS_PATH = os.path.join(Path(__file__).resolve().parent.parent, 'helpers')
 WITH_EXTRA_TRAIN = False
 
 with open(CONSTANTS_PATH + '/ARABIC_LETTERS_LIST.pickle', 'rb') as file:
