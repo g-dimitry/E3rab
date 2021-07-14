@@ -26,7 +26,7 @@ SECRET_KEY = 'bcf2u&4w%xe-e2f77%sj%w#z33ph*yv%e!(a99pzaay^0*#k=w'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["ngrok.io", "443e22f21a59.ngrok.io", "18.193.7.235"]
+ALLOWED_HOSTS = ["ngrok.io", "443e22f21a59.ngrok.io", "18.193.7.235", "34.132.143.59"]
 
 AUTH_USER_MODEL = "users.User"
 TEACHER_MODEL = "users.Teacher"

@@ -17,6 +17,7 @@ from django.forms.models import model_to_dict
 from tensorflow import keras
 from .utilities import predict
 
+tf.config.list_physical_devices('GPU')
 
 # Create your views here.
 class SentenceList(generics.GenericAPIView, mixins.ListModelMixin):
