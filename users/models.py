@@ -1,13 +1,11 @@
-from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
 from django.db import models
-from django.contrib.auth.models import AbstractUser, PermissionsMixin
+from django.contrib.auth.models import AbstractUser
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.dispatch import receiver
 from django.urls import reverse
 from django_rest_passwordreset.signals import reset_password_token_created
-from django.contrib.sites.shortcuts import get_current_site
-from .utils import Util
+from .utilities import Util
 
 
 # Create your models here.
@@ -79,8 +77,8 @@ class User(AbstractUser):
 
 
 class Student(User):
-    GRADE_CHOICES = ((1, 'Primary School'), (2, 'Preparatory School'), (3, 'Secondary School'))
-    grade = models.PositiveSmallIntegerField(choices=GRADE_CHOICES, default=2)
+    GRADE_CHOICES = ((1, 'Primary School'), (2, 'Preparatory School'), (3, 'Secondary School'), (4, 'Enthusiast'))
+    grade = models.PositiveSmallIntegerField(choices=GRADE_CHOICES, default=4)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['full_name', 'grade']

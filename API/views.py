@@ -1,19 +1,9 @@
 import tensorflow as tf
-from django.shortcuts import render
-from django.contrib.auth import login
-from django.shortcuts import redirect
-from django.views.generic import CreateView
-from django.db import models
-from rest_framework import generics, mixins, status
-from rest_framework.fields import DateTimeField
+from rest_framework import generics, mixins, status, filters
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly
-from rest_framework.views import APIView
-from API.models import Sentence, Student, Teacher
+from rest_framework.permissions import IsAuthenticated
+from API.models import Sentence, Student
 from API.serializers import SentenceSerializer, NewSentenceSerializer
-from AutomaticEarabSystem import settings
-from .constants import SIMILARITY_SCORE_THRESHOLD
-from django.forms.models import model_to_dict
 from tensorflow import keras
 from .utilities import predict
 
@@ -23,6 +13,8 @@ tf.config.list_physical_devices('GPU')
 class SentenceList(generics.GenericAPIView, mixins.ListModelMixin):
     queryset = Sentence.objects.all()
     serializer_class = SentenceSerializer
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('raw',)
 
     def get(self, request):
         return self.list(request)
@@ -47,8 +39,21 @@ class SentenceDetails(generics.GenericAPIView, mixins.RetrieveModelMixin, mixins
        serializer.save(author=self.request.user)
 
 
+class SentenceRequests(generics.GenericAPIView, mixins.ListModelMixin):
+    queryset = Sentence.objects.filter(diacritized="NEW")
+    for i in queryset:
+        grade=Student.objects.get(id=i.author.id).grade
+        setattr(i, 'grade', grade)
+    serializer_class = SentenceSerializer
+
+
+    def get(self, request):
+        return self.list(request)
+
+
 class DiacritizationView(generics.GenericAPIView):
     serializer_class = NewSentenceSerializer
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request):
         data=request.data

@@ -9,11 +9,11 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
+
 from pathlib import Path
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -26,8 +26,7 @@ SECRET_KEY = 'bcf2u&4w%xe-e2f77%sj%w#z33ph*yv%e!(a99pzaay^0*#k=w'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["ngrok.io", "443e22f21a59.ngrok.io", "18.193.7.235", "34.132.143.59"]
-
+ALLOWED_HOSTS = ["127.0.0.1", "18.193.7.235", "34.132.143.59"]
 AUTH_USER_MODEL = "users.User"
 TEACHER_MODEL = "users.Teacher"
 STUDENT_MODEL = "users.Student"
@@ -44,27 +43,16 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_rest_passwordreset',
     'knox',
-    # 'rest_framework.authtoken',
     'API.apps.ApiConfig',
     'users'
 ]
 
-'''
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-    ]
-}
-
-'''
 REST_FRAMEWORK = {
     'NON_FIELD_ERRORS_KEY': 'error',
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
         'knox.auth.TokenAuthentication',
     )
 }
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -99,7 +87,18 @@ WSGI_APPLICATION = 'AutomaticEarabSystem.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
+'''
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'new_aes',
+        'USER': 'root',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': '3306',
+    }
+}
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -151,13 +150,3 @@ STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-
-# LOGIN_REDIRECT_URL = 'blog-home'
-# LOGIN_URL = 'login'
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'bassamgomaa123@gmail.com'
-EMAIL_HOST_PASSWORD = 'xaka xvas hldl pfoj'

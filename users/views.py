@@ -1,16 +1,12 @@
-from django.contrib.auth.hashers import make_password
-from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth import login
 from rest_framework import generics, mixins, status, filters, status
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from .models import Student, Teacher
 from .serializers import UserSerializer, StudentSerializer, TeacherSerializer, ChangePasswordSerializer, TeacherRegistrationSerializer, StudentRegistrationSerializer
 from .models import User
 from .permissions import UpdateProfile
-from django.urls import reverse
-from knox.models import AuthToken
 from knox.views import LoginView as KnoxLoginView
 
 

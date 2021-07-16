@@ -5,10 +5,11 @@ from .models import Sentence
 class NewSentenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sentence
-        fields = ['id', 'raw', 'author']
+        fields = ['id', 'raw', 'urgent']
 
 
 class SentenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sentence
-        fields = ['id', 'raw', 'diacritized', 'date_posted', 'author', 'diacritizer']
+        fields = ['id', 'raw', 'diacritized', 'date_posted', 'date_diacritized', 'author','diacritizer', 'urgent']
+
