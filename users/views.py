@@ -22,12 +22,12 @@ class UserList(generics.GenericAPIView, mixins.ListModelMixin):
 
 class CurrentUserDetails(generics.GenericAPIView, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin):
     queryset = User.objects.all().select_related('student', 'teacher')
+    serializer_class = UserSerializer
+    lookup_field = 'email'
+
     def get_object(self, queryset=None):
         obj = self.request.user
         return obj
-
-    serializer_class = UserSerializer
-    lookup_field = 'email'
 
     def get(self, request):
         currentUser = self.queryset.get(email=request.user)
@@ -122,7 +122,6 @@ class LoginView(KnoxLoginView):
 
 
 class ChangePasswordView(generics.UpdateAPIView):
-
     serializer_class = ChangePasswordSerializer
     model = User
     permission_classes = (IsAuthenticated,)

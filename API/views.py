@@ -48,7 +48,7 @@ class SentenceDetails(generics.GenericAPIView, mixins.RetrieveModelMixin, mixins
 
 
 class SentenceRequests(generics.GenericAPIView, mixins.ListModelMixin):
-    queryset = Sentence.objects.filter(diacritized="NEW")
+    queryset = Sentence.objects.filter(diacritized="")
     for i in queryset:
         grade=Student.objects.get(id=i.author.id).grade
         setattr(i, 'grade', grade)
