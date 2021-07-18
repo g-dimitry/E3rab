@@ -11,10 +11,18 @@ tf.config.list_physical_devices('GPU')
 
 # Create your views here.
 class SentenceList(generics.GenericAPIView, mixins.ListModelMixin):
-    queryset = Sentence.objects.all()
     serializer_class = SentenceSerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ('raw',)
+
+    def get_queryset(self):
+        queryset = Sentence.objects.all()
+        diacritized = self.request.query_params.get('diacritized')
+        if diacritized is not None:
+            if (diacritized == "null"):
+                diacritized = None
+            queryset = queryset.filter(diacritized__exact=diacritized)
+        return queryset
 
     def get(self, request):
         return self.list(request)
