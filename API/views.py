@@ -23,7 +23,7 @@ class SentenceList(generics.GenericAPIView, mixins.ListModelMixin):
             if (diacritized == "null"):
                 diacritized = None
             queryset = queryset.filter(diacritized__exact=diacritized)
-        return queryset
+        return queryset.select_related('author')
 
     def get(self, request):
         return self.list(request)
