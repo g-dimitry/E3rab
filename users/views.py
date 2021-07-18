@@ -98,8 +98,6 @@ class StudentRegistration(generics.GenericAPIView):
         serializer = self.serializer_class(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        userDict = serializer.data
-        userDict['profile_image'] = 'http://34.132.143.59:8080' + str(userDict['profile_image'])
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
@@ -111,9 +109,7 @@ class TeacherRegistration(generics.GenericAPIView):
         serializer = self.serializer_class(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        userDict = serializer.data
-        userDict['profile_image'] = 'http://34.132.143.59:8080' + str(userDict['profile_image'])
-        return Response(userDict, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class LoginView(KnoxLoginView):
