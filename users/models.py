@@ -6,7 +6,8 @@ from django.dispatch import receiver
 from django.urls import reverse
 from django_rest_passwordreset.signals import reset_password_token_created
 from .utilities import Util
-
+import time
+import math
 
 # Create your models here.
 class MyUserManager(BaseUserManager):
@@ -48,22 +49,27 @@ class StudentManager(BaseUserManager):
  
 class TeacherManager(BaseUserManager):
  
-    def create_teacher(self, full_name, email, expertise, password=None):
+    def create_teacher(self, full_name, email, expertise, password=None, profile_image='default.jpg'):
         if email is None:
             raise TypeError('Users must have an email address.')
         teacher = Teacher(full_name=full_name, 
                             email=self.normalize_email(email),
-                            expertise=expertise)
+                            expertise=expertise,
+                            profile_image=profile_image)
         teacher.is_teacher=True
         teacher.set_password(password)
+        teacher.save()
+        teacher.profile_image = str(teacher.profile_image).replace('media/','')
         teacher.save()
         return teacher
 
 
 class User(AbstractUser):
+    def create_path(instance, filename):
+        return 'media/profile_pics/' + str(instance) + '_' + str(math.floor(time.time() * 1000)) + '_' + filename
     full_name = models.CharField(max_length=50, null=True)
     email = models.EmailField(null=False, unique=True, max_length=255)
-    profile_image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+    profile_image = models.ImageField(default='default.jpg', upload_to=create_path)
     is_teacher = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
