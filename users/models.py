@@ -36,13 +36,16 @@ class MyUserManager(BaseUserManager):
 
 class StudentManager(BaseUserManager):
  
-    def create_student(self, full_name, email, grade, password=None):
+    def create_student(self, full_name, email, grade, password=None, profile_image='default.jpg'):
         if email is None:
             raise TypeError('Users must have an email address.')
         student = Student(full_name=full_name, 
                           email=self.normalize_email(email),
-                          grade=grade)
+                          grade=grade,
+                          profile_image=profile_image)
         student.set_password(password)
+        student.save()
+        student.profile_image = str(student.profile_image).replace('media/','')
         student.save()
         return student
  
