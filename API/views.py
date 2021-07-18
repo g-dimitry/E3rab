@@ -6,6 +6,7 @@ from API.models import Sentence, Student
 from API.serializers import SentenceSerializer, NewSentenceSerializer
 from tensorflow import keras
 from .utilities import predict
+from datetime import datetime
 
 tf.config.list_physical_devices('GPU')
 
@@ -38,13 +39,12 @@ class SentenceDetails(generics.GenericAPIView, mixins.RetrieveModelMixin, mixins
         return self.retrieve(request, id=id)
 
     def put(self, request, id):
-        return self.update(request, id=id)
+        request.data['diacritizer'] = self.request.user
+        request.data['date_diacritized'] = datetime.now()
+        return self.partial_update(request, id=id)
 
     def delete(self, request, id):
         return self.destroy(request, id=id)
-
-    def perform_update(self, serializer):
-       serializer.save(author=self.request.user)
 
 
 class SentenceRequests(generics.GenericAPIView, mixins.ListModelMixin):
