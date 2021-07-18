@@ -30,8 +30,6 @@ class CurrentUserDetails(generics.GenericAPIView, mixins.RetrieveModelMixin, mix
     lookup_field = 'email'
 
     def get(self, request):
-        print("ana hena")
-        print(request.user)
         currentUser = self.queryset.get(email=request.user)
         currentUserSerialized = UserSerializer(currentUser).data
         response = {
