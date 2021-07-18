@@ -2,10 +2,6 @@ from rest_framework import serializers
 from .models import User, Student, Teacher
 
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('id', 'profile_image', 'full_name', 'email', 'is_teacher')
 
 
 class StudentSerializer(serializers.ModelSerializer):
@@ -19,6 +15,22 @@ class TeacherSerializer(serializers.ModelSerializer):
         model = Teacher
         fields = ['id', 'profile_image', 'full_name', 'email', 'expertise', 'rating']
 
+class UniqueTeacherSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Teacher
+        fields = ['expertise', 'rating']
+
+class UniqueStudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ['grade']
+
+class UserSerializer(serializers.ModelSerializer):
+    student = UniqueStudentSerializer(many=False, read_only=True)
+    teacher = UniqueTeacherSerializer(many=False, read_only=True)
+    class Meta:
+        model = User
+        fields = ('id', 'profile_image', 'full_name', 'email', 'is_teacher', 'student', 'teacher')
 
 class StudentRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField( max_length=128, min_length=8, write_only=True)
