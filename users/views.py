@@ -20,6 +20,18 @@ class UserList(generics.GenericAPIView, mixins.ListModelMixin):
     def get(self, request):
         return self.list(request)
 
+class CurrentUserDetails(generics.GenericAPIView, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin):
+    def get_object(self, queryset=None):
+        obj = self.request.user
+        return obj
+
+    serializer_class = UserSerializer
+    lookup_field = 'email'
+
+    def get(self, request):
+        print("ana hena")
+        print(request.user)
+        return self.retrieve(request, email=request.user)
 
 class StudentList(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
     queryset = Student.objects.all()

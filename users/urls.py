@@ -5,6 +5,7 @@ from knox import views as knox_views
 
 urlpatterns = [
      path('', views.UserList.as_view(), name='users'),
+     path('me/', views.CurrentUserDetails.as_view(), name='user-current-profile'),
      path('teachers/', views.TeacherList.as_view(), name='teachers'),
      path('students/', views.StudentList.as_view(), name='students'),
      path('students/<int:id>/', views.StudentDetails.as_view(), name='student-profile'),
