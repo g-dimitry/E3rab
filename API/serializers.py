@@ -14,3 +14,8 @@ class SentenceSerializer(serializers.ModelSerializer):
         model = Sentence
         fields = ['id', 'raw', 'diacritized', 'date_posted', 'date_diacritized', 'author','diacritizer', 'urgent']
 
+class OtherSentenceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sentence
+        fields = ['id', 'raw', 'diacritized', 'date_posted', 'date_diacritized', 'author','diacritizer', 'urgent']
+

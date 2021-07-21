@@ -3,7 +3,7 @@ from rest_framework import generics, mixins, status, filters
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from API.models import Sentence, Student
-from API.serializers import SentenceSerializer, NewSentenceSerializer
+from API.serializers import SentenceSerializer, NewSentenceSerializer, OtherSentenceSerializer
 from tensorflow import keras
 from .utilities import predict
 from datetime import datetime
@@ -66,7 +66,7 @@ class DiacritizationView(generics.GenericAPIView):
     def post(self, request):
         data=request.data
         data['author'] = self.request.user
-        serializer = SentenceSerializer(data=data)
+        serializer = OtherSentenceSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         DNN_input = serializer.validated_data['raw']
         model = keras.models.load_model('Encoder.sav')
