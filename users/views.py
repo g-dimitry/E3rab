@@ -8,6 +8,7 @@ from .serializers import UserSerializer, StudentSerializer, TeacherSerializer, C
 from .models import User
 from .permissions import UpdateProfile
 from knox.views import LoginView as KnoxLoginView
+from knox.models import AuthToken
 
 
 # Create your views here.
@@ -95,8 +96,11 @@ class StudentRegistration(generics.GenericAPIView):
         data = request.data
         serializer = self.serializer_class(data=data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        user = serializer.save()
+        user = User.objects.get(email=serializer.validated_data['email'])
+        serializedData = serializer.data
+        serializedData['token'] = AuthToken.objects.create(user)[1]
+        return Response(serializedData, status=status.HTTP_201_CREATED)
 
 
 class TeacherRegistration(generics.GenericAPIView):
@@ -106,8 +110,11 @@ class TeacherRegistration(generics.GenericAPIView):
         data = request.data
         serializer = self.serializer_class(data=data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        user = serializer.save()
+        user = User.objects.get(email=serializer.validated_data['email'])
+        serializedData = serializer.data
+        serializedData['token'] = AuthToken.objects.create(user)[1]
+        return Response(serializedData, status=status.HTTP_201_CREATED)
 
 
 class LoginView(KnoxLoginView):
