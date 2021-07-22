@@ -90,3 +90,51 @@ class DiacritizationView(generics.GenericAPIView):
         # serializer.validated_data['diacritized'] = DNN_output
         # serializer.save()
         # return Response(serializer.validated_data['diacritized'], status=status.HTTP_201_CREATED)
+
+class DiacritizationFileView(generics.GenericAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def _processLine(self, request):
+        print(request)
+        data=request['data']
+        data['author'] = self.request.user
+        serializer = OtherSentenceSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        DNN_input = serializer.validated_data['raw']
+        model = keras.models.load_model('Encoder.sav')
+        '''
+        DNN_output1 = "DIACRITIZED SENTENCE"
+        DNN_output2 = "DIACRITIZED SENTENCE"
+        DNN_output3 = "DIACRITIZED SENTENCE"
+        if DNN_output2 == DNN_output1:
+            serializer.validated_data['diacritized'] = DNN_output1
+        elif DNN_output3 == DNN_output1:
+            serializer.validated_data['diacritized'] = DNN_output1
+        elif DNN_output3 == DNN_output2:
+            serializer.validated_data['diacritized'] = DNN_output2
+        elif DNN_output2 == DNN_output3:
+            serializer.validated_data['diacritized'] = DNN_output2
+        else:
+            # serializer.validated_data['diacritized'] = {DNN_output1, DNN_output2, DNN_output3}
+            serializer.save()
+            return Response({"Success": "Your request is pending, you will be notified when it is done."}, status=status.HTTP_201_CREATED)
+        serializer.save()
+        return Response(serializer.validated_data['diacritized'], status=status.HTTP_201_CREATED)
+        '''
+        DNN_output = predict(DNN_input, model)
+        serializer.validated_data['diacritized'] = DNN_output
+        serializer.save()
+        return serializer.data
+
+    def post(self, request):
+        decodedLines = request.FILES['file'].read().decode("utf8").split("\n")
+        filteredDecodedLines = list(filter(lambda s: bool(s), decodedLines))
+        print(filteredDecodedLines)
+        responseList = []
+        for line in filteredDecodedLines:
+            responseList.append(self._processLine({
+                'data': {
+                    'raw': line
+                } 
+            }))
+        return Response(responseList, status=status.HTTP_201_CREATED)
