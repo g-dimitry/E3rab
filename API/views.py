@@ -69,7 +69,7 @@ class DiacritizationView(generics.GenericAPIView):
         serializer = OtherSentenceSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         DNN_input = serializer.validated_data['raw']
-        model1 = keras.models.load_model('LLSTM_weights2.h5')
+        model1 = keras.models.load_model('Encoder.sav')
         DNN_output1 = predict(DNN_input, model1)
         DNN_output2 = "DIACRITIZED SENTENCE"
         DNN_output3 = "DIACRITIZED SENTENCE"
