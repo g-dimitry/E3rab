@@ -124,6 +124,14 @@ class DiacritizationView(generics.GenericAPIView):
         )
 
         s.save()
+
+        s2 = SentenceAnswers(
+            model = 'CBHG',
+            text = DNN_output2,
+            sentence = savedSentence
+        )
+
+        s2.save()
         
         return Response(response, status=status.HTTP_201_CREATED)
         '''
