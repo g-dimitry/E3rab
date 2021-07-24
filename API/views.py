@@ -7,6 +7,7 @@ from API.serializers import SentenceSerializer, NewSentenceSerializer, OtherSent
 from tensorflow import keras
 from .utilities import predict
 from extra.my_diacritize import myDiacritize
+from RoBertA.robertaDiacritize import robertaDiacritize
 from datetime import datetime
 from django.http import QueryDict
 import gc
@@ -83,13 +84,9 @@ class SentenceRequests(generics.GenericAPIView, mixins.ListModelMixin):
         return self.list(request)
 
 def reset_gpu():
-    keras.backend.clear_session()
     device = cuda.get_current_device()
-    device.reset()
-    
-    gc.collect()
-    torch.cuda.empty_cache()
-    torch.cuda.memory_summary(device=None, abbreviated=False)
+    if device:
+        device.reset()
 
 class DiacritizationView(generics.GenericAPIView):
     serializer_class = NewSentenceSerializer
@@ -105,7 +102,9 @@ class DiacritizationView(generics.GenericAPIView):
         DNN_output1 =  predict(DNN_input, model1)
         reset_gpu()
         DNN_output2 = myDiacritize(DNN_input)
-        # DNN_output3 = "DIACRITIZED SENTENCE"
+        reset_gpu()
+        DNN_output3 = robertaDiacritize('RoBertA/model/', DNN_input)
+        reset_gpu()
 
         response = None
 
@@ -132,6 +131,14 @@ class DiacritizationView(generics.GenericAPIView):
         )
 
         s2.save()
+        
+        s3 = SentenceAnswers(
+            model = 'RoBertA',
+            text = DNN_output3,
+            sentence = savedSentence
+        )
+
+        s3.save()
         
         return Response(response, status=status.HTTP_201_CREATED)
         '''

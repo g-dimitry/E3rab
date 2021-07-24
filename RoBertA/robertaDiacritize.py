@@ -1,6 +1,6 @@
 from transformers import pipeline
 from transformers import RobertaTokenizerFast
-from utils import diacritize
+from .utils import diacritize
 
 
 arabic_letters = ['أ', 'ة', 'إ', 'ؤ', 'آ', 'ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز',
