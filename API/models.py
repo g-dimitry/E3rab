@@ -1,7 +1,6 @@
 from django.db import models
 from users.models import Student, Teacher
 
-
 class Sentence(models.Model):
     raw = models.CharField(max_length=400)
     diacritized = models.CharField(max_length=400, null=True)
@@ -13,3 +12,8 @@ class Sentence(models.Model):
 
     def __str__(self):
         return self.raw
+
+class SentenceAnswers(models.Model):
+    model = models.CharField(max_length=24)
+    text = models.CharField(max_length=400)
+    sentence = models.ForeignKey(Sentence, on_delete=models.DO_NOTHING, related_name='sentence_answers')
