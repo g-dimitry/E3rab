@@ -8,6 +8,10 @@ from tensorflow import keras
 from .utilities import predict
 from extra.my_diacritize import myDiacritize
 from datetime import datetime
+from django.http import QueryDict
+import gc
+import torch
+from numba import cuda
 
 tf.config.list_physical_devices('GPU')
 
@@ -59,39 +63,51 @@ class SentenceRequests(generics.GenericAPIView, mixins.ListModelMixin):
     def get(self, request):
         return self.list(request)
 
+def reset_gpu():
+    keras.backend.clear_session()
+    device = cuda.get_current_device()
+    device.reset()
+    
+    gc.collect()
+    torch.cuda.empty_cache()
+    torch.cuda.memory_summary(device=None, abbreviated=False)
 
 class DiacritizationView(generics.GenericAPIView):
     serializer_class = NewSentenceSerializer
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
-        data=request.data
+        data=request.data.copy()
         data['author'] = self.request.user
         serializer = OtherSentenceSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         DNN_input = serializer.validated_data['raw']
         model1 = keras.models.load_model('Encoder.sav')
-        DNN_output =  predict(DNN_input, model1)
-        # DNN_output2 = myDiacritize(DNN_input)
+        DNN_output1 =  predict(DNN_input, model1)
+        reset_gpu()
+        DNN_output2 = myDiacritize(DNN_input)
         # DNN_output3 = "DIACRITIZED SENTENCE"
-        # if DNN_output2 == DNN_output1:
-        #     serializer.validated_data['diacritized'] = DNN_output1
+        
+        if DNN_output2 == DNN_output1:
+            serializer.validated_data['diacritized'] = DNN_output1
         # elif DNN_output3 == DNN_output1:
         #     serializer.validated_data['diacritized'] = DNN_output1
         # elif DNN_output3 == DNN_output2:
         #     serializer.validated_data['diacritized'] = DNN_output2
         # elif DNN_output2 == DNN_output3:
         #     serializer.validated_data['diacritized'] = DNN_output2
-        # else:
-        #     serializer.validated_data['diacritized'] = {DNN_output1, DNN_output2, DNN_output3}
-        #     serializer.save()
-        #     return Response({"Success": "Your request is pending, you will be notified when it is done."}, status=status.HTTP_201_CREATED)
-        # serializer.save()
-        # return Response(serializer.validated_data['diacritized'], status=status.HTTP_201_CREATED)
+        else:
+            # serializer.validated_data['diacritized'] = {DNN_output1, DNN_output2, DNN_output3}
+            serializer.save()
+            return Response({"Success": "Your request is pending, you will be notified when it is done."}, status=status.HTTP_201_CREATED)
+        serializer.save()
+        
+        return Response(serializer.validated_data['diacritized'], status=status.HTTP_201_CREATED)
+        '''
         serializer.validated_data['diacritized'] = DNN_output
         serializer.save()
         return Response(serializer.validated_data['diacritized'], status=status.HTTP_201_CREATED)
-
+        '''
 
 class DiacritizationFileView(generics.GenericAPIView):
     permission_classes = (IsAuthenticated,)

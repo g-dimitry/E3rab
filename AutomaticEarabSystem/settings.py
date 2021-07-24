@@ -26,7 +26,7 @@ SECRET_KEY = 'bcf2u&4w%xe-e2f77%sj%w#z33ph*yv%e!(a99pzaay^0*#k=w'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "18.193.7.235", "34.132.143.59"]
+ALLOWED_HOSTS = ["127.0.0.1", "18.193.7.235", "34.132.143.59", "34.89.130.215"]
 AUTH_USER_MODEL = "users.User"
 TEACHER_MODEL = "users.Teacher"
 STUDENT_MODEL = "users.Student"
@@ -166,7 +166,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR.parent, 'logs/debug.log'),
+            'filename': os.path.join(BASE_DIR, 'logs/debug.log'),
         },
     },
     'loggers': {
