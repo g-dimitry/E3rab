@@ -157,3 +157,23 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'bassamgomaa123@gmail.com'
 EMAIL_HOST_PASSWORD = 'xaka xvas hldl pfoj'
+TIMEOUT = 600
+print(os.path.join(BASE_DIR.parent, 'logs/debug.log'))
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR.parent, 'logs/debug.log'),
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
