@@ -88,6 +88,27 @@ def reset_gpu():
     if device:
         device.reset()
 
+def compare_strings(str1, str2):
+    length = len(str1)
+    counter = 0
+    for index, val in enumerate(str1):
+        if index < len(str2) and val == str2[index]:
+            counter += 1
+    return counter / length
+
+def compare_multiple_strings(str_arr):
+    length = len(str_arr)
+    weights = []
+    for index in range(length):
+        if index != length -1:
+            weights.append(compare_strings(str_arr[index], str_arr[index + 1]))
+        else:
+            weights.append(compare_strings(str_arr[0], str_arr[index]))
+    sum = 0
+    for weight in weights:
+        sum += weight
+    return sum / length
+
 class DiacritizationView(generics.GenericAPIView):
     serializer_class = NewSentenceSerializer
     permission_classes = (IsAuthenticated,)
@@ -108,8 +129,16 @@ class DiacritizationView(generics.GenericAPIView):
 
         response = None
 
-        if DNN_output2 == DNN_output1:
-            serializer.validated_data['diacritized'] = DNN_output1
+        threshold = 0.5
+        avg = compare_multiple_strings([
+            DNN_output1,
+            DNN_output2,
+            DNN_output3,
+        ])
+        print(avg)
+
+        if avg >= threshold:
+            serializer.validated_data['diacritized'] = DNN_output3
             response = serializer.validated_data['diacritized']
         else:
             response = {"Success": "Your request is pending, you will be notified when it is done."}
